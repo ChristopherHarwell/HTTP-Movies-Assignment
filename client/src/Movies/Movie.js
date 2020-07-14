@@ -15,6 +15,17 @@ function Movie({ addToSavedList }) {
       .catch((err) => console.log(err.response));
   };
 
+  const handleDelete = e => {
+    e.preventDefault();
+    axios
+      .delete(`http://localhost:5000/api/movies/${movie.id}`)
+      .then(res => {
+        setMovie(res.data);
+        push("/movies");
+      })
+      .catch(err => console.log(err));
+  };
+
   const saveMovie = () => {
     addToSavedList(movie);
   };
@@ -35,6 +46,9 @@ function Movie({ addToSavedList }) {
       <div className="save-button" onClick={saveMovie}>
         Save
       </div>
+      <button onClick={handleDelete}>
+        Delete
+      </button>
     </div>
   );
 }
