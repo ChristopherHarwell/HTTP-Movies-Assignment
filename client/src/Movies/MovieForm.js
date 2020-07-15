@@ -10,40 +10,48 @@ const initialMovie = {
   stars: [],
 };
 
-function MovieForm(props) {
+function MovieForm({setList}) {
   const { push } = useHistory();
   const { id } = useParams();
   const [movie, setMovie] = useState(initialMovie);
 
   useEffect(() => {
     axios
-        .get(`http://localhost:5000/api/movies/${id}`)
-        .then((response) => {
-            setMovie(response.data)
-        })
-        .catch(error => console.log("GET Request Error: ", error));
+      .get(`http://localhost:5000/api/movies/${id}`)
+      .then((response) => {
+        setMovie(response.data);
+      })
+      .catch((error) => console.log("GET Request Error: ", error));
   }, [id]);
 
   function changeHandler(event) {
     event.persist();
     let value = event.target.value;
+    let newStars = [];
 
-    setMovie({
-      ...movie,
-      [event.target.name]: value,
-    });
+    if (event.target.name === "stars") {
+      newStars.push(event.target.value);
+      setMovie({
+        ...movie,
+        [event.target.name]: value,
+      });
+    } else {
+      setMovie({
+        ...movie,
+        [event.target.name]: value,
+      });
+    }
   }
-
   function handleSubmit(event) {
     event.preventDefault();
 
     axios
-        .put(`http://localhost:5000/api/movies/${id}`, movie)
-        .then(response => {
-            props.setMovie(response.data);
-            push(`/movies/${id}`);
-        })
-        .catch(error => console.log("PUT Request Error: ", error))
+      .put(`http://localhost:5000/api/movies/${id}`, movie)
+      .then((response) => {
+        setList(response.data);
+        push(`/movies/${id}`);
+      })
+      .catch((error) => console.log("PUT Request Error: ", error));
   }
 
   return (
@@ -86,6 +94,6 @@ function MovieForm(props) {
       </form>
     </div>
   );
-};
+}
 
 export default MovieForm;

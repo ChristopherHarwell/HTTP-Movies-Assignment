@@ -17,13 +17,15 @@ const App = () => {
       .catch((err) => console.log(err.response));
   };
 
+  useEffect(() => {
+    getMovieList();
+  }, []);
+
   const addToSavedList = (movie) => {
     setSavedList([...savedList, movie]);
   };
 
-  useEffect(() => {
-    getMovieList();
-  }, []);
+
 
   return (
     <>
@@ -33,13 +35,21 @@ const App = () => {
         <MovieList movies={movieList} />
       </Route>
 
-      <Route path="/movies/:id">
-        <Movie addToSavedList={addToSavedList} />
-      </Route>
+      <Route
+        path="/movies/:id"
+        render={(props) => (
+          <Movie
+            {...props}
+            addToSavedList={addToSavedList}
+            setMovieList={setMovieList}
+          />
+        )}
+      />
 
-      <Route path="/update-movie/:id">
-        <MovieForm setMovie={setMovieList} />
-      </Route>
+      <Route
+        path="/update-movie/:id"
+        render={(props) => <MovieForm {...props} setMovieList={savedList} />}
+      />
     </>
   );
 };
